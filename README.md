@@ -1,1 +1,1 @@
-Testing resolved conflict
+Testing ok conflict
