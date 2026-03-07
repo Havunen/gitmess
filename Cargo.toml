@@ -1,5 +1,9 @@
 [package]
+<<<<<<< HEAD
 name = "gitmess"
+=======
+name = "chess_gui"
+>>>>>>> origin/version2
 version = "0.1.0"
 edition = "2021"
 
