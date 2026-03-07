@@ -1,0 +1,11 @@
+[package]
+<<<<<<< HEAD
+name = "gitmess"
+=======
+name = "chess_gui"
+>>>>>>> 990898ae5a2ce673b769987d9bdeecad29093b0e
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+macroquad = "0.4"
