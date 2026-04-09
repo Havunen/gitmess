@@ -1,6 +1,7 @@
 use crate::board::*;
 use crate::rules;
 
+// EDITED
 #[derive(Clone, Debug)]
 pub enum GamePhase {
     SelectPiece,
