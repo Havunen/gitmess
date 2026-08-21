@@ -34,6 +34,7 @@ fn window_conf() -> Conf {
 
 /// Convert board position to screen coordinates (top-left of square).
 /// White is at the bottom of the screen.
+/// test virtual
 fn board_to_screen(pos: Pos) -> (f32, f32) {
     let x = pos.file as f32 * SQUARE_SIZE;
     let y = (7 - pos.rank) as f32 * SQUARE_SIZE;
