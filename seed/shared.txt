@@ -1,0 +1,7 @@
+line 1: shared between main and verify/conflict
+line 2: shared between main and verify/conflict
+line 3: original wording
+line 4: original wording
+line 5: original wording
+line 6: shared between main and verify/conflict
+line 7: shared between main and verify/conflict
