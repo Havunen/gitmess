@@ -1,0 +1,92 @@
+# Fixture workflow for verifying GitComet Pro's forge views against real
+# GitHub. Each job produces one run shape the CI, log and artifact views have
+# to handle; none of them builds anything.
+name: verify
+
+on:
+  push:
+    branches:
+      - main
+      - "verify/**"
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      slow:
+        description: "Also run the ten-minute job (for the running and cancel states)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  pass:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "pass on ${GITHUB_REF_NAME} at ${GITHUB_SHA}"
+
+  fail:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "this job fails on purpose"
+          exit 1
+
+  slow:
+    if: github.event_name == 'workflow_dispatch' && inputs.slow
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - run: |
+          echo "sleeping 600 s; cancel the run to exercise cancellation"
+          sleep 600
+
+  matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        leg: [alpha, beta, gamma]
+    steps:
+      - run: echo "matrix leg ${{ matrix.leg }}"
+
+  artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      # Random bytes, so the zip the artifact service stores stays at the size
+      # written here: 1 MiB is under the client's 32 MiB cap, 40 MiB is over it.
+      - run: |
+          head -c 1048576 /dev/urandom > small.bin
+          head -c 41943040 /dev/urandom > large.bin
+          ls -l small.bin large.bin
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: small
+          path: small.bin
+          retention-days: 1
+          compression-level: 0
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: large
+          path: large.bin
+          retention-days: 1
+          compression-level: 0
+
+  big-log:
+    runs-on: ubuntu-latest
+    steps:
+      # 105,000 lines of 95 bytes: about 10 MB, over the client's 8 MiB log cap.
+      - run: |
+          awk 'BEGIN {
+            pad = sprintf("%79s", ""); gsub(/ /, "x", pad)
+            for (i = 1; i <= 105000; i++) printf "big-log %06d %s\n", i, pad
+          }'
+
+  annotations:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "::warning file=README.md,line=1,title=Verify warning::A warning annotation on README.md line 1"
+          echo "::error file=src/main.rs,line=3,col=5,title=Verify error::An error annotation on src/main.rs line 3"
+          echo "::notice file=Cargo.toml,line=2::A notice annotation on Cargo.toml line 2"
+          echo "annotations emitted; the job still succeeds"
