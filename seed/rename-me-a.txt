@@ -1,2 +1,0 @@
-This file is renamed unchanged on verify/rename-binary,
-so the diff shows a pure rename (100% similarity).

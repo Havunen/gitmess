@@ -1,7 +1,0 @@
-line 1: shared between main and verify/conflict
-line 2: shared between main and verify/conflict
-line 3: changed on main
-line 4: changed on main
-line 5: changed on main
-line 6: shared between main and verify/conflict
-line 7: shared between main and verify/conflict
